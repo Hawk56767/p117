@@ -1,44 +1,39 @@
-from flask import Flask, render_template, url_for, request, jsonify
-from text_sentiment_prediction import *
+# import the necessary modules
+from flask import Flask , render_template , request , jsonify
+
+# importing sentiment_analysis file as sa
+import sentiment_analysis as sa
 
 app = Flask(__name__)
+
+# app route for index page
 @app.route('/')
-def index():
+def home():
     return render_template('index.html')
- 
-@app.route('/predict-emotion', methods=["POST"])
-def predict_emotion():
-    
-    # Get Input Text from POST Request
-    input_text=request.JSON.get("text")
-    
-    if not input_text:
-        response={
-            "status":"error",
-            "message": "please enter some text"
-        }
+
+# write a route for post request
+@app.route('' , methods = [''])
+def review():
+
+    # extract the customer_review by writing the appropriate 'key' from the JSON data
+    review = request.json.get('')
+
+    # check if the customer_review is empty, return error
+    if not review:
+
+        return jsonify({'status' : 'error' , 
+                        'message' : 'Empty response'})
+
+    # if review is not empty, pass it through the 'predict' function.
+    # predict function returns 2 things : sentiment and path of image in static folder
+    # example : Positive , ./static/assets/emoticons/positive.png
+
     else:
-        predicted_emotion,predicted_emotion_img_url=predict(input_text)
-        response = {
-                    "status": "success",
-                    "data": {
-                            "predicted_emotion": predicted_emotion,
-                            "predicted_emotion_img_url": predicted_emotion_img_url
-                            }  
-                   }
 
-        # Send Response         
-        return jsonify(response)
-        # Response to send if the input_text is undefined
-       
-        
-        # Response to send if the input_text is not undefined
-        
-        # Send Response         
-        
-       
-app.run(debug=True)
+        _ , _ = sa.predict(review)
+
+        return jsonify({'':'' , '':''})
 
 
-
-    
+if __name__  ==  "__main__":
+    app.run(debug = True)
